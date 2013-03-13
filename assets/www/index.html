@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="user-scalable=yes, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        
+        <!--phonegap-->
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        
+        <!--jquerymobile-->
+        <link rel="stylesheet" type="text/css" href="css/themes/Resky3.css" />
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile.structure-1.2.0.min.css" />
+		
+		<!--Composant du script fixgeometry-->
+		<style>/*http://www.semicomplete.com/blog/geekery/jquery-mobile-full-height-content.html*/
+			  @media screen and (orientation: landscape) {
+				html, body {
+				  width: 100%;
+				}
+		
+				.content h1.landscape { display: block }
+				.content h1.portrait { display: none }
+			  }
+			  @media screen and (orientation: portrait) {
+				html, body {
+				  width: 100%;
+				}
+		
+				.content .landscape { display: none }
+				.content .portrait { display: block }
+			  }
+    	</style>
+		
+		<!--Autres jquerys-->
+		<script src="js/jquery-1.8.2.js"></script>
+		<script src="js/jquery.mobile-1.2.0.min.js"></script>
+		<script src="js/jquery.geo-1.0.0-b1.5.min.js"></script> <!--Docs: http://docs.jquerygeo.com/geomap/index.html-->
+		
+		<!--Autres scripts-->
+		<script src="js/geolocaliseMe.js"></script>
+		<script src="js/fixgeometry.js"></script>
+        
+        <title>Resky</title>   
+    </head>
+    
+    <body>  	
+    	<!--Conteneur principal-->
+		<div data-role="page" data-theme="a">
+			<script>
+       		/* LOAD SPIN for the loading of the app
+        	$(function () {
+        		$(".app").bind( "", function( e, geo ) { } );
+        		ou plus dirty
+        		$.mobile.showPageLoadingMsg("a", "Loading map...");
+			});  */
+    		</script>
+			
+			<!--Conteneur du contenu à afficher-->
+			<!--Hide app until complete load-->
+			<div id="app" class="app">
+				
+				<!--Header-->
+				<div class="header" data-role="header" data-position="inline">
+					<h1>Resky</h1>
+					<button onclick="$('#map').geomap('refresh'); console.log('map refreshed'); $('#popupBasic').popup('open');" 
+					data-role="button" data-icon="refresh" class="ui-btn-right" data-iconshadow="false" 
+					data-shadow="false" data-theme="none" data-iconpos="notext"></button>
+				</div>						
+				
+				<!--Contenu principal-->	
+				<div class="content" id="map"  data-rel="popup">
+					<!--zoom control-->
+					<div class="map-button">
+     					<div onclick="$('#map').geomap('zoom', 1);"
+							data-role="button" data-icon="plus" class="ui-btn-right" data-iconshadow="false" 
+							data-shadow="false" data-theme="none" data-iconpos="notext"></div>
+						<br />
+						<div onclick="$('#map').geomap('zoom', -1);" 
+							data-role="button" data-icon="minus" class="ui-btn-right" data-iconshadow="false" 
+							data-shadow="false" data-theme="none" data-iconpos="notext"></div>	
+    				</div>
+    			</div>
+					
+				<!--Footer-->					
+				<div data-role="footer" class="footer"> <!--ui-grid-b-->
+					<div class="center-wrapper">
+					<div class="center-wrapper" onclick="geolocaliseMe();" data-role="button" data-icon="star" data-theme="c">Signaler un contrôle</div>
+					</div>
+					<!--http://docs.jquerygeo.com/geomap/refresh.html
+					<div class="ui-block-a">
+					<div class="ui-block-b"><button onclick="$('#map').geomap('refresh'); console.log('map refreshed'); $('#popupBasic').popup('open');" data-role="button" data-icon="refresh" data-theme="a">Rafraîchir</button></div>-->	
+				    <!--iv class="ui-block-c"><button onclick="geolocaliseMe();" data-role="button" data-icon="star" data-theme="a">Signale!</button></div>-->
+				</div>
+				
+				<!--Popup-->	
+				<div data-role="popup" id="popupBasic" >
+					<!--http://jquerymobile.com/demos/1.2.0/docs/pages/popup/methods.html-->
+					<p>Map refreshed!<p>
+				</div>		
+			</div>
+		</div>  
+		
+		<!--Recadrage du contenu en fonction de l'espace d'affichage disponible. Ordre volontaire!-->
+		<script>
+		  (function() {/*http://www.semicomplete.com/blog/geekery/jquery-mobile-full-height-content.html*/			
+			/* fixgeometry */
+			$(document).on('pageinit', function() {
+				$(window).bind("orientationchange resize pageshow pagebeforechange", fixgeometry);
+				$("#map").on("gestureend", onPinch);			
+				function onPinch(e) {
+    				if (e.scale > 1) {
+        			// React to the pinch zoom in here.
+					$('#map').geomap('zoom', 1);
+			    	} else if (e.scale < 1) {
+        			//React to the pinch zoom out here.
+        			$('#map').geomap('zoom', -1);
+    				}
+				}	   
+			});				  
+		  })();
+		</script> 
+		
+        <!--<div class="app">
+            <h1>Apache Cordova</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+        </div>>-->
+        <!--phonegap-->
+        <script type="text/javascript" src="cordova-2.3.0.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();   
+        </script>
+    </body>
+</html>
